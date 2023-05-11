@@ -1,0 +1,28 @@
+<div class="card">
+    <h5 class="card-header">User Manager</h5>
+    <div class="card-body">
+        <table class="table overflow">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users">
+                    <td>{{ user.userId }}</td>
+                    <td>{{ user.firstName }} {{ user.lastName }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.roles | list }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" (click)="openEditRolesModal(user)">Edit Roles</button>
+                        <button *ngIf="!user.roles.includes('Admin')" class="btn btn-sm btn-danger ms-1" (click)="deleteUser(user)">Delete User</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

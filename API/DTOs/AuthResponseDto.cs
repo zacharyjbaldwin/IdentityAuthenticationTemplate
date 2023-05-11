@@ -2,7 +2,7 @@
 {
     public class AuthResponseDto
     {
-        public string Id { get; set; }
+        public string UserId { get; set; }
         public string Token { get; set; }
         public int ExpiresIn { get; set; } = 3600;
         public string FirstName { get; set; }

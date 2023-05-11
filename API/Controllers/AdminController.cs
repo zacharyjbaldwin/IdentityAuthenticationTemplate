@@ -1,8 +1,11 @@
-﻿using API.Entities;
+﻿using API.DTOs;
+using API.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
+
 namespace API.Controllers
 {
     [Authorize(Roles = "Admin")]
@@ -60,7 +63,7 @@ namespace API.Controllers
                 .Include(user => user.UserRoles)
                 .Select(user => new
                 {
-                    user.Id,
+                    UserId = user.Id,
                     user.FirstName,
                     user.LastName,
                     user.Email,
@@ -69,6 +72,30 @@ namespace API.Controllers
                 .ToListAsync();
 
             return Ok(users);
+        }
+
+        [HttpPatch("users/edit-roles/{userId}")]
+        public async Task<ActionResult> UpdateUserById(string userId, EditRolesRequestDto editRolesRequestDto)
+        {
+            var selectedRoles = editRolesRequestDto.Roles;
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound("No user found with that ID.");
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
+            if (!result.Succeeded) return BadRequest("Failed to add to roles.");
+            result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
+            if (!result.Succeeded) return BadRequest("Failed to remove from roles.");
+            return Ok(await _userManager.GetRolesAsync(user));
+        }
+
+        [HttpDelete("users/{userId}")]
+        public async Task<ActionResult> DeleteUserById(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound("No user found with that ID.");
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded) return Problem("Failed to delete user.");
+            return NoContent();
         }
     }
 }
