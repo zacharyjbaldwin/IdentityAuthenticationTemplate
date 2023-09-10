@@ -22,7 +22,7 @@ export class EditRolesModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.rolesForm = new FormGroup({
-      member: new FormControl(this.user?.roles.includes('Member') ?? false),
+      user: new FormControl(this.user?.roles.includes('User') ?? false),
       admin: new FormControl(this.user?.roles.includes('Admin') ?? false)
     });
   }
@@ -30,7 +30,7 @@ export class EditRolesModalComponent implements OnInit {
   public onSubmit(): void {
     if (this.rolesForm) {
       let roles = [];
-      if (this.rolesForm.value.member) roles.push('Member');
+      if (this.rolesForm.value.user) roles.push('User');
       if (this.rolesForm.value.admin) roles.push('Admin');
       this.affirm.emit(roles);
     }

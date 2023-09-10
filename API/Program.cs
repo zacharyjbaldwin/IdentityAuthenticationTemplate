@@ -1,5 +1,7 @@
 using API.Data;
+using API.Entities;
 using API.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,5 +42,22 @@ app.UseStaticFiles();
 app.MapControllers();
 
 app.MapFallbackToController("Index", "Fallback");
+
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+try
+{
+    var context = services.GetRequiredService<DataContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
+    await context.Database.MigrateAsync();
+    await Seed.SeedRoles(roleManager);
+    await Seed.SeedAdminUser(userManager, app.Configuration);
+}
+catch (Exception ex)
+{
+    var logger = services.GetService<ILogger<Program>>();
+    logger.LogError(ex, "An error occured during migration");
+}
 
 app.Run();

@@ -33,7 +33,7 @@ namespace API.Controllers
             };
             var result = await _userManager.CreateAsync(user, registerRequestDto.Password);
             if (!result.Succeeded) return Problem("Failed to create user.");
-            result = await _userManager.AddToRoleAsync(user, "Member");
+            result = await _userManager.AddToRoleAsync(user, "User");
             if (!result.Succeeded) return Problem("Failed to add user to role.");
             return Ok(new AuthResponseDto
             {
@@ -68,7 +68,7 @@ namespace API.Controllers
             });
         }
 
-        [Authorize(Roles = "Member, Admin")]
+        [Authorize(Roles = "User, Admin")]
         [HttpPut("change-password")]
         public async Task<ActionResult> ChangePassword(ChangePasswordRequestDto changePasswordRequestDto)
         {

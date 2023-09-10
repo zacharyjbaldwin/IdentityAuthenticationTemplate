@@ -2,8 +2,8 @@
     <h4>Edit roles for {{ user.firstName }} {{ user.lastName }}</h4>
     <form [formGroup]="rolesForm" (ngSubmit)="onSubmit()">
         <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" formControlName="member">
-            <label class="form-check-label">Member</label>
+            <input class="form-check-input" type="checkbox" role="switch" formControlName="user">
+            <label class="form-check-label">User</label>
         </div>
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" role="switch" formControlName="admin">
